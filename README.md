@@ -1,6 +1,8 @@
 # cpager
 vmtouch per cgroup
 
+Using pagemap and kpagecgroup: https://www.kernel.org/doc/Documentation/vm/pagemap.txt
+
 ### Example ###
 
 ```
