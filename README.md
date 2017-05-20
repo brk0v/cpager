@@ -1,7 +1,7 @@
 # cpager
-vmtouch per cgroup
+vmtouch per cgroup (using golang)
 
-Using pagemap and kpagecgroup: https://www.kernel.org/doc/Documentation/vm/pagemap.txt
+Using **pagemap** and **kpagecgroup**: https://www.kernel.org/doc/Documentation/vm/pagemap.txt
 
 ### Example ###
 
