@@ -235,8 +235,8 @@ func (st *Stat) HandleFile(path string) error {
 			ci := binary.LittleEndian.Uint64(cgroup)
 
 			// update per file
-			if c, ok := fh.Cgroups[ci]; ok {
-				c.Charged += 1
+			if _, ok := fh.Cgroups[ci]; ok {
+				fh.Cgroups[ci].Charged += 1
 			} else {
 				fh.Cgroups[ci] = &Cgroup{
 					Charged: 1,
@@ -245,8 +245,8 @@ func (st *Stat) HandleFile(path string) error {
 			}
 
 			// update for all cgroup
-			if c, ok := st.Cgroups[ci]; ok {
-				c.Charged += 1
+			if _, ok := st.Cgroups[ci]; ok {
+				st.Cgroups[ci].Charged += 1
 			} else {
 				st.Cgroups[ci] = &Cgroup{
 					Charged: 1,
@@ -276,10 +276,6 @@ func (st *Stat) Handle(paths []string, depth uint) {
 		// get stat
 		stat, err := os.Lstat(path)
 		if err != nil {
-			fmt.Println(path)
-			fmt.Println(stat)
-			fmt.Println(err)
-
 			st.errs = append(st.errs, err)
 			continue
 		}
@@ -372,10 +368,10 @@ func ByteSize(bytes int64) string {
 
 func printCgroupStat(cgroups Cgroups, charged uint64, pages int64) {
 	// title
-	fmt.Printf("%7s%11s%12s%12s\n", "ci", "percent", "pages", "path")
+	fmt.Printf("%12s%11s%12s%12s\n", "cgmem inode", "percent", "pages", "path")
 
 	// print not charged pages
-	fmt.Printf("%7s%10.1f%%%12d        %s\n", "-",
+	fmt.Printf("%12s%10.1f%%%12d        %s\n", "-",
 		float64(uint64(pages)-charged)*100/float64(pages),
 		uint64(pages)-charged,
 		"not charged",
@@ -383,13 +379,13 @@ func printCgroupStat(cgroups Cgroups, charged uint64, pages int64) {
 
 	// print per cgroup charged pages
 	for _, c := range cgroups {
-		p := float64(charged) * 100 / float64(pages)
+		p := float64(c.Charged) * 100 / float64(pages)
 		path, err := ResolvCgroup(c.Inode)
 		pt := path.Path
 		if err != nil {
 			pt = err.Error()
 		}
-		fmt.Printf("%7d%10.1f%%%12d        %s\n", c.Inode, p, charged, pt)
+		fmt.Printf("%12d%10.1f%%%12d        %s\n", c.Inode, p, c.Charged, pt)
 	}
 }
 
