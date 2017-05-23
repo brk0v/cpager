@@ -20,3 +20,9 @@ Resident Pages: 10590695/14694992 40.4G/56.1G 72.1%
     584      12.9%     1901403        /sys/fs/cgroup/memory/some/cgroup/with/hierarchy3
     291       4.7%      690160        /sys/fs/cgroup/memory/
 ```
+
+### Dependencies ###
+
+```
+go get github.com/spf13/pflag
+```
